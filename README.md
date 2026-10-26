@@ -18,6 +18,8 @@
 ```text
 frontend-fullstack-test/
 ├── README.md
+├── package.json              # общие команды и Husky для текущего Git-репозитория
+├── .husky/pre-push            # проверка перед push
 ├── frontend/
 │   └── README.md
 └── fullstack/
@@ -30,12 +32,29 @@ frontend-fullstack-test/
 
 ## Публикация
 
-Папка `frontend-fullstack-test` служит для локальной организации двух заданий. Для сдачи создайте **два репозитория**:
+Сейчас Git и общий `pre-push` hook находятся в `frontend-fullstack-test`: push из этой папки проверяет оба задания. Если сдавать задания строго по структуре ТЗ, создайте **два репозитория**:
 
 1. Репозиторий Frontend: его корень — папка `frontend/`.
 2. Репозиторий Fullstack: его корень — папка `fullstack/`, чтобы `client/`, `server/`, `init-db.sql` и `Readme.md` находились в корне репозитория, как указано в ТЗ.
 
 Файлы `node_modules`, `dist`, `*.tsbuildinfo` и `server/.env` исключены через `.gitignore`; исходники, `package-lock.json`, `.env.example` и скриншоты нужно включить в коммит. Ссылки на репозитории добавляются после публикации.
+
+Во всех трёх npm-пакетах настроены ESLint и Prettier: `npm run lint`, `npm run format:check` и `npm run format`. Правила редактора заданы в `.editorconfig` каждого задания.
+
+## Проверка перед push
+
+Для текущего общего Git-репозитория установите зависимости из его корня:
+
+```bash
+npm ci
+npm --prefix frontend ci
+npm --prefix fullstack/client ci
+npm --prefix fullstack/server ci
+```
+
+Первый `npm ci` подключает Husky. Перед каждым `git push` hook запускает форматирование и ESLint для Frontend, Fullstack client и server. Если Prettier изменил отслеживаемые файлы, push прерывается: проверьте результат, создайте коммит и повторите команду. Те же проверки можно запустить вручную через `npm run check:push`.
+
+В папках `frontend/` и `fullstack/` также лежат собственные hooks для сдачи двумя отдельными репозиториями. После создания каждого Git-репозитория выполните `npm ci` в его корне; для Fullstack дополнительно установите зависимости в `client/` и `server/`.
 
 ## Быстрый старт
 

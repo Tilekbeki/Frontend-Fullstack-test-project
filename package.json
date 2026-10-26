@@ -1,0 +1,14 @@
+{
+  "name": "frontend-fullstack-test",
+  "private": true,
+  "scripts": {
+    "prepare": "node .husky/install.mjs",
+    "format": "npm --prefix frontend run format && npm --prefix fullstack/client run format && npm --prefix fullstack/server run format",
+    "format:check": "npm --prefix frontend run format:check && npm --prefix fullstack/client run format:check && npm --prefix fullstack/server run format:check",
+    "lint": "npm --prefix frontend run lint && npm --prefix fullstack/client run lint && npm --prefix fullstack/server run lint",
+    "check:push": "npm run format && npm run lint"
+  },
+  "devDependencies": {
+    "husky": "9.1.7"
+  }
+}
