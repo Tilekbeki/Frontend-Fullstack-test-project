@@ -1,0 +1,6 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/Tilekbeki/Frontend-test-project.git
+[submodule "fullstack"]
+	path = fullstack
+	url = https://github.com/Tilekbeki/Fullstack-test-project.git

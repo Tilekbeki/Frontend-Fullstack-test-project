@@ -2,11 +2,15 @@
 set -e
 
 before_diff=$(git diff --binary -- .)
+before_frontend=$(git -C frontend diff --binary -- .)
+before_fullstack=$(git -C fullstack diff --binary -- .)
 
 npm run check:push
 
 after_diff=$(git diff --binary -- .)
-if [ "$before_diff" != "$after_diff" ]; then
+after_frontend=$(git -C frontend diff --binary -- .)
+after_fullstack=$(git -C fullstack diff --binary -- .)
+if [ "$before_diff" != "$after_diff" ] || [ "$before_frontend" != "$after_frontend" ] || [ "$before_fullstack" != "$after_fullstack" ]; then
   echo 'Prettier изменил отслеживаемые файлы. Проверьте изменения, создайте коммит и повторите push.'
   exit 1
 fi

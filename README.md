@@ -1,11 +1,11 @@
 # Тестовые задания: Frontend и Fullstack
 
-В этой папке находятся два независимых тестовых задания:
+Этот репозиторий связывает два независимых тестовых задания через Git submodules:
 
-| Папка | Задача | Основной стек |
-| --- | --- | --- |
-| [`frontend`](./frontend/) | Dashboard и картотека граждан | React, TypeScript, Ant Design |
-| [`fullstack`](./fullstack/) | Dashboard с двумя связанными таблицами и REST API | React, TypeScript, AG Grid, Express, PostgreSQL |
+| Подмодуль | Репозиторий | Задача | Основной стек |
+| --- | --- | --- | --- |
+| [`frontend`](./frontend/) | [Frontend-test-project](https://github.com/Tilekbeki/Frontend-test-project) | Dashboard и картотека граждан | React, TypeScript, Ant Design |
+| [`fullstack`](./fullstack/) | [Fullstack-test-project](https://github.com/Tilekbeki/Fullstack-test-project) | Dashboard с двумя связанными таблицами и REST API | React, TypeScript, AG Grid, Express, PostgreSQL |
 
 Общие критерии: работоспособность, качество интерфейса и кода, соблюдение требований соответствующего задания. Срок сдачи, указанный в обоих ТЗ, — 1–2 недели. Точный состав и порядок запуска описаны в README каждой папки.
 
@@ -18,7 +18,8 @@
 ```text
 frontend-fullstack-test/
 ├── README.md
-├── package.json              # общие команды и Husky для текущего Git-репозитория
+├── .gitmodules               # адреса двух отдельных репозиториев
+├── package.json              # общие команды и Husky
 ├── .husky/pre-push            # проверка перед push
 ├── frontend/
 │   └── README.md
@@ -30,20 +31,26 @@ frontend-fullstack-test/
     └── init-db.sql
 ```
 
-## Публикация
+## Клонирование и публикация
 
-Сейчас Git и общий `pre-push` hook находятся в `frontend-fullstack-test`: push из этой папки проверяет оба задания. Если сдавать задания строго по структуре ТЗ, создайте **два репозитория**:
+```bash
+git clone --recurse-submodules https://github.com/Tilekbeki/Frontend-Fullstack-test-project.git
+cd Frontend-Fullstack-test-project
+```
 
-1. Репозиторий Frontend: его корень — папка `frontend/`.
-2. Репозиторий Fullstack: его корень — папка `fullstack/`, чтобы `client/`, `server/`, `init-db.sql` и `Readme.md` находились в корне репозитория, как указано в ТЗ.
+Если общий репозиторий уже клонирован без подмодулей, выполните `git submodule update --init --recursive`. Обычное обновление `git pull --ff-only && git submodule update --init --recursive` получает именно те версии заданий, которые зафиксированы в общем репозитории.
 
-Файлы `node_modules`, `dist`, `*.tsbuildinfo` и `server/.env` исключены через `.gitignore`; исходники, `package-lock.json`, `.env.example` и скриншоты нужно включить в коммит. Ссылки на репозитории добавляются после публикации.
+Каждое задание можно клонировать отдельно. Корень [Frontend-репозитория](https://github.com/Tilekbeki/Frontend-test-project) содержит React-приложение, а корень [Fullstack-репозитория](https://github.com/Tilekbeki/Fullstack-test-project) — `client/`, `server/`, `init-db.sql` и `Readme.md`, как указано в ТЗ.
+
+При изменении задания сначала создайте коммит и выполните `git push` внутри соответствующего подмодуля. Затем в общем репозитории добавьте изменившийся указатель подмодуля в коммит и отправьте его. Иначе новый коммит задания не попадёт в общую сборку.
+
+Файлы `node_modules`, `dist`, `*.tsbuildinfo` и `server/.env` исключены через `.gitignore`; исходники, `package-lock.json`, `.env.example` и скриншоты включены в репозитории.
 
 Во всех трёх npm-пакетах настроены ESLint и Prettier: `npm run lint`, `npm run format:check` и `npm run format`. Правила редактора заданы в `.editorconfig` каждого задания.
 
 ## Проверка перед push
 
-Для текущего общего Git-репозитория установите зависимости из его корня:
+Для общего Git-репозитория установите зависимости из его корня:
 
 ```bash
 npm ci
@@ -52,9 +59,9 @@ npm --prefix fullstack/client ci
 npm --prefix fullstack/server ci
 ```
 
-Первый `npm ci` подключает Husky. Перед каждым `git push` hook запускает форматирование и ESLint для Frontend, Fullstack client и server. Если Prettier изменил отслеживаемые файлы, push прерывается: проверьте результат, создайте коммит и повторите команду. Те же проверки можно запустить вручную через `npm run check:push`.
+Первый `npm ci` подключает Husky. Перед каждым `git push` из общего репозитория hook запускает форматирование и ESLint для Frontend, Fullstack client и server. Если Prettier изменил отслеживаемые файлы в любом из трёх репозиториев, push прерывается: проверьте результат, создайте коммит и повторите команду. Те же проверки можно запустить вручную через `npm run check:push`.
 
-В папках `frontend/` и `fullstack/` также лежат собственные hooks для сдачи двумя отдельными репозиториями. После создания каждого Git-репозитория выполните `npm ci` в его корне; для Fullstack дополнительно установите зависимости в `client/` и `server/`.
+У каждого подмодуля есть собственный `pre-push` hook: установите зависимости командой `npm ci` в корне подмодуля; для Fullstack дополнительно выполните `npm ci` в `client/` и `server/`.
 
 ## Быстрый старт
 
